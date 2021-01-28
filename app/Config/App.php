@@ -21,7 +21,8 @@ class App extends BaseConfig
 	| environments.
 	|
 	*/
-	public $baseURL = 'http://localhost:8080/';
+	// public $baseURL = 'http://localhost:8080/';
+	public $baseURL = 'http://20000.loc.kr/';
 
 	/*
 	|--------------------------------------------------------------------------
@@ -63,7 +64,7 @@ class App extends BaseConfig
 	| should run under for this request.
 	|
 	*/
-	public $defaultLocale = 'en';
+	public $defaultLocale = 'ko';
 
 	/*
 	|--------------------------------------------------------------------------

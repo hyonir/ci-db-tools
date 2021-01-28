@@ -15,6 +15,9 @@ namespace App\Controllers;
  */
 
 use CodeIgniter\Controller;
+use CodeIgniter\HTTP\RequestInterface;
+use CodeIgniter\HTTP\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 class BaseController extends Controller
 {
@@ -27,14 +30,25 @@ class BaseController extends Controller
 	 * @var array
 	 */
 	protected $helpers = [];
+	protected $twig;
 
 	/**
 	 * Constructor.
 	 */
-	public function initController(\CodeIgniter\HTTP\RequestInterface $request, \CodeIgniter\HTTP\ResponseInterface $response, \Psr\Log\LoggerInterface $logger)
+	public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
 	{
 		// Do Not Edit This Line
 		parent::initController($request, $response, $logger);
+
+		$appPaths = new \Config\Paths();
+		$appViewPaths = $appPaths->viewDirectory;
+
+		$loader = new \Twig\Loader\FilesystemLoader($appViewPaths);
+
+		$this->twig = new \Twig\Environment($loader, [
+			'cache' => WRITEPATH.'/cache/twig',
+			'auto_reload' => true
+        ]);
 
 		//--------------------------------------------------------------------
 		// Preload any models, libraries, etc, here.
