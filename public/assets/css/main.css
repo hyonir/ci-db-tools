@@ -3,5 +3,9 @@ body {
 }
 #content {
     width: 1000px;
-    margin: 0 auto;
+    margin: 0 auto 2em auto;
+}
+.result-block {
+    height: 500px;
+    overflow-y: scroll;
 }

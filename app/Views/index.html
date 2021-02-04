@@ -8,26 +8,77 @@
                 style="width: 500px; height: 300px;" loop autoplay>
     </lottie-player>
     <hr class="my-4">
-    <p>타이포그래피 및 간격에 유틸리티 클래스를 사용하여 더 큰 컨테이너 내에서 콘텐츠 공간을 확보합니다.</p>
-    <form>
+    <h2>난수쿠폰 생성하기</h2>
+    <p>데이터베이스에 난수 번호로 된 쿠폰을 생성합니다. <br>
+    현재는 대성마이맥만 구현되어 있습니다. 😇</p>
+    <form id="myForm">
         <div class="mb-3">
-            <label for="formFile" class="form-label">Default file input example</label>
-            <input class="form-control" type="file" id="formFile">
+            <label for="formFile" class="form-label">Type</label>
+            <select class="form-select" aria-label="타입을 선택해 주세요">
+                <option value="daesung" selected>대성마이맥</option>
+                <option value="zocbo" disabled>족보닷컴</option>
+            </select>
         </div>
         <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <label for="formFile" class="form-label">File</label>
+            <input class="form-control" type="file" id="my-file" name="my-file" accept=".xlsx">
+            <div id="fileHelp" class="form-text">허용 확장자: .xlsx</div>
         </div>
-        <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
-        </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
-        <button type="submit" class="btn btn-primary">제출</button>
+        <button type="submit" class="btn btn-secondary">미리보기</button>
+        <button type="reset" class="btn btn-outline-secondary" id="reset">초기화</button>
     </form>
+    <div id="preview" class="mt-3"></div>
 </div>
+<script>
+    reset.onclick = () => {
+        preview.innerHTML = '';
+    };
+
+    myForm.onsubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            let response = await fetch('/api/preview', {
+                method: 'POST',
+                body: new FormData(myForm)
+            });
+            let result = await response.json();
+
+            // 에러 처리
+            if (result.code !== 200)
+                throw new Error('[Error:' + result.code + '] ' + result.message);
+
+            // 프리뷰 출력
+            preview.innerHTML = result.render;
+            // 생성하기
+            make.onclick = () => { createCoupon(result) };
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+
+    async function createCoupon(data) {
+        let formData = new FormData();
+        formData.append('data', JSON.stringify(data.data));
+        formData.append('maxId', data.maxId);
+
+        try {
+            let response = await  fetch('/api/coupon', {
+                method: 'POST',
+                body: formData,
+            });
+            let result = await response.json();
+
+            // 에러 처리
+            if (result.code !== 200)
+                throw new Error('[Error:' + result.code + '] ' + result.message);
+
+            // 완료 얼럿 후 페이지 새로고침
+            alert(result.message);
+            location.reload();
+        } catch (e) {
+            alert(e.message);
+        }
+    }
+</script>
 {% endblock %}
