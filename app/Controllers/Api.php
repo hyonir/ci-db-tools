@@ -5,6 +5,7 @@ use \PhpOffice\PhpSpreadsheet\IOFactory;
 class Api extends BaseController
 {
     protected $request;
+    protected $tableName = 'my_table_name';
 
     /**
      * 미리보기 데이터를 생성합니다.
@@ -33,7 +34,7 @@ class Api extends BaseController
 
             // 대성쿠폰 테이블의 max id를 읽어온다.
             $db = \Config\Database::connect();
-            $builder = $db->table('coupon_daesung');
+            $builder = $db->table($this->tableName);
             $builder->selectMax('id');
             $query = $builder->get();
             $maxId = $query->getRow()->id;
@@ -80,7 +81,7 @@ class Api extends BaseController
             // $row[0] => 쿠폰번호
             // $row[1] => 쿠폰상태 ('활성')
             array_push($batchData, [
-                'num'           => $maxId + $i,
+                'num'           => (int)$maxId + $i,
                 'coupon_number' => $row[0],
                 'wr_id'         => 1,
                 'branch_name'   => ''
@@ -91,7 +92,7 @@ class Api extends BaseController
         try {
             // 등록 시도
             $db = \Config\Database::connect();
-            $builder = $db->table('coupon_daesung');
+            $builder = $db->table($this->tableName);
             $result = $builder->insertBatch($batchData);
             $response = [
                 'code'      => 200,
