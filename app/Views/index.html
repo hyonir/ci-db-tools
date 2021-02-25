@@ -10,13 +10,13 @@
     <hr class="my-4">
     <h2>난수쿠폰 생성하기</h2>
     <p>데이터베이스에 난수 번호로 된 쿠폰을 생성합니다. <br>
-    현재는 대성마이맥만 구현되어 있습니다. 😇</p>
+    현재는 대성마이맥, 족보닷컴만 구현되어 있습니다. 😇</p>
     <form id="myForm">
         <div class="mb-3">
             <label for="formFile" class="form-label">Type</label>
-            <select class="form-select" aria-label="타입을 선택해 주세요">
+            <select name="type" class="form-select" aria-label="타입을 선택해 주세요">
                 <option value="daesung" selected>대성마이맥</option>
-                <option value="zocbo" disabled>족보닷컴</option>
+                <option value="zocbo">족보닷컴</option>
             </select>
         </div>
         <div class="mb-3">
@@ -63,7 +63,7 @@
         formData.append('maxId', data.maxId);
 
         try {
-            let response = await  fetch('/api/coupon', {
+            let response = await fetch('/api/coupon', {
                 method: 'POST',
                 body: formData,
             });

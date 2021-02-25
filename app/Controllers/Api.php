@@ -32,8 +32,11 @@ class Api extends BaseController
             $sheetData = $spreadsheet->getActiveSheet()->toArray();
             array_shift($sheetData);
 
-            // 대성쿠폰 테이블의 max id를 읽어온다.
+            // 선택한 쿠폰 테이블의 max id를 읽어온다.
+            $type = $this->request->getPost('type');
+
             $db = \Config\Database::connect();
+            $this->tableName = $_ENV['table.coupon.'.$type];
             $builder = $db->table($this->tableName);
             $builder->selectMax('id');
             $query = $builder->get();
