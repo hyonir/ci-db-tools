@@ -59,6 +59,7 @@
 
     async function createCoupon(data) {
         let formData = new FormData();
+        formData.append('type', data.type);
         formData.append('data', JSON.stringify(data.data));
         formData.append('maxId', data.maxId);
 

@@ -44,9 +44,10 @@ class Api extends BaseController
 
             $response = [
                 'code'      => 200,
+                'type'      => $type,
                 'data'      => $sheetData,
                 'render'    => $this->twig->render('pages/preview.html', ['sheetData' => $sheetData, 'maxId' => $maxId]),
-                'maxId'     => $maxId
+                'maxId'     => $maxId,
             ];
 
         } catch (\RuntimeException $e) {
@@ -94,6 +95,9 @@ class Api extends BaseController
 
         try {
             // 등록 시도
+            $type = $formData['type'];
+            $this->tableName = $_ENV['table.coupon.'.$type];
+
             $db = \Config\Database::connect();
             $builder = $db->table($this->tableName);
             $result = $builder->insertBatch($batchData);
